@@ -412,12 +412,16 @@
 
    All signed metadata files have the format:
    
-       { "signed" : ROLE,
+       {
+         "signed" : ROLE,
          "signatures" : [
-            { "keyid" : KEYID,
-              "method" : METHOD,
-              "sig" : SIGNATURE }
-            , ... ]
+           {
+             "keyid" : KEYID,
+             "method" : METHOD,
+             "sig" : SIGNATURE
+           },
+           ...
+         ]
        }
 
    where: ROLE is a dictionary whose "_type" field describes the role type.
@@ -432,15 +436,17 @@
        "RSASSA-PSS" : RSA Probabilistic signature scheme with appendix.
        
        "ed25519" : Elliptic curve digital signature algorithm based on Twisted
-                  Edwards curves.
+                   Edwards curves.
        
    RSASSA-PSS: http://tools.ietf.org/html/rfc3447#page-29 
    ed25519: http://ed25519.cr.yp.to/
    
    All keys have the format:
    
-      { "keytype" : KEYTYPE,
-        "keyval" : KEYVAL }
+      { 
+        "keytype" : KEYTYPE,
+        "keyval" : KEYVAL
+      }
 
    where KEYTYPE is a string describing the type of the key and how it's
    used to sign documents.  The type determines the interpretation of
@@ -450,9 +456,12 @@
    
    The 'rsa' format is:
    
-      { "keytype" : "rsa",
-        "keyval" : { "public" : PUBLIC,
-                     "private" : PRIVATE }
+      {
+        "keytype" : "rsa",
+        "keyval" : { 
+          "public" : PUBLIC,
+          "private" : PRIVATE
+        }
       }
 
    where PUBLIC and PRIVATE are in PEM format and are strings.  All RSA keys
@@ -460,17 +469,23 @@
 
    The 'ed25519' format is:
    
-      { "keytype" : "ed25519",
-        "keyval" : { "public" : PUBLIC,
-                     "private" : PRIVATE }
+      {
+        "keytype" : "ed25519",
+        "keyval" : {
+          "public" : PUBLIC,
+          "private" : PRIVATE
+        }
       }
 
    where PUBLIC and PRIVATE are both 32-byte strings.
 
    Metadata does not include the private portion of the key object:
    
-      { "keytype" : "rsa",
-        "keyval" : { "public" : PUBLIC}
+      {
+        "keytype" : "rsa",
+        "keyval" : {
+          "public" : PUBLIC
+        }
       }
    
    The KEYID of a key is the hexdigest of the SHA-256 hash of the
@@ -492,17 +507,21 @@
 
    The format of root.json is as follows:
 
-     { "_type" : "Root",
+     {
+       "_type" : "Root",
        "version" : VERSION,
        "expires" : EXPIRES,
        "keys" : {
-           KEYID : KEY
-           , ... },
+         KEYID : KEY,
+         ...
+       },
        "roles" : {
-           ROLE : {
-             "keyids" : [ KEYID, ... ] ,
-             "threshold" : THRESHOLD }
-           , ... }
+         ROLE : {
+           "keyids" : [ KEYID, ... ],
+           "threshold" : THRESHOLD
+         },
+         ...
+       }
      }
 
    VERSION is an integer that is greater than 0.  Clients MUST NOT replace a
@@ -534,7 +553,8 @@
 
    The format of snapshot.json is as follows:
 
-     { "_type" : "Snapshot",
+     {
+       "_type" : "Snapshot",
        "version" : VERSION,
        "expires" : EXPIRES,
        "meta" : METAFILES
@@ -542,11 +562,13 @@
 
    METAFILES is an object whose format is the following:
 
-     { METAPATH : {
-           "length" : LENGTH,
-           "hashes" : HASHES,
-           ("custom" : { ... }) }
-       , ...
+     {
+       METAPATH : {
+			"length" : LENGTH,
+			"hashes" : HASHES,
+         ("custom" : { ... })
+       },
+       ...
      }
 
    METAPATH is the the metadata file's path on the repository relative to the
@@ -556,7 +578,8 @@
 
    The format of targets.json is as follows:
 
-     { "_type" : "Targets",
+     {
+       "_type" : "Targets",
        "version" : VERSION,
        "expires" : EXPIRES,
        "targets" : TARGETS,
@@ -565,11 +588,13 @@
 
    TARGETS is an object whose format is the following:
 
-     { TARGETPATH : {
-           "length" : LENGTH,
-           "hashes" : HASHES,
-           ("custom" : { ... }) }
-       , ...
+     {
+       TARGETPATH : {
+			"length" : LENGTH,
+			"hashes" : HASHES,
+			("custom" : { ... })
+		 },
+		 ...
      }
 
    Each key of the TARGETS object is a TARGETPATH.  A TARGETPATH is a path to
@@ -588,16 +613,21 @@
 
    DELEGATIONS is an object whose format is the following:
 
-     { "keys" : {
-           KEYID : KEY,
-           ... },
-       "roles" : [{
+     {
+       "keys" : {
+         KEYID : KEY,
+         ...
+       },
+       "roles" : [
+         {
            "name": ROLE,
-           "keyids" : [ KEYID, ... ] ,
+           "keyids" : [ KEYID, ... ],
            "threshold" : THRESHOLD,
            ("path_hash_prefixes" : [ HEX_DIGEST, ... ] |
             "paths" : [ PATHPATTERN, ... ])
-       }, ... ]
+         },
+         ...
+       ]
      }
 
    In order to discuss target paths, a role MUST specify only one of the
@@ -661,7 +691,8 @@
 
    The format of the timestamp file is as follows:
 
-     { "_type" : "Timestamp",
+     {
+       "_type" : "Timestamp",
        "version" : VERSION,
        "expires" : EXPIRES,
        "meta" : METAFILES
@@ -679,17 +710,21 @@
 
    The format of mirrors.json is as follows:
 
-     { "_type" : "Mirrorlist",
+     {
+       "_type" : "Mirrorlist",
        "version" : VERSION,
        "expires" : EXPIRES,
        "mirrors" : [
-          { "urlbase" : URLBASE,
-            "metapath" : METAPATH,
-            "targetspath" : TARGETSPATH,
-            "metacontent" : [ PATHPATTERN ... ] ,
-            "targetscontent" : [ PATHPATTERN ... ] ,
-            ("custom" : { ... }) }
-          , ... ]
+         {
+           "urlbase" : URLBASE,
+           "metapath" : METAPATH,
+           "targetspath" : TARGETSPATH,
+           "metacontent" : [ PATHPATTERN ... ],
+           "targetscontent" : [ PATHPATTERN ... ],
+           ("custom" : { ... })
+         },
+         ...
+       ]
      }
 
    URLBASE is the URL of the mirror which METAPATH and TARGETSPATH are relative
